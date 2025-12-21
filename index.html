@@ -11,32 +11,75 @@
 
 <body class="bg-slate-100">
 
-<header class="bg-indigo-700 text-white text-center py-6">
-  <h1 class="text-3xl font-bold">Karmchari Khoj Portal</h1>
-  <p class="opacity-90">UP Lekha Samvarg Employees Directory</p>
+<!-- HEADER -->
+<header class="bg-indigo-700 text-white py-5">
+  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold">Karmchari Khoj Portal</h1>
+      <p class="text-sm opacity-90">UP Lekha Samvarg Employees Directory</p>
+    </div>
+
+    <!-- ADMIN LOGIN BUTTON -->
+    <a href="admin-login.html"
+      class="bg-white text-indigo-700 font-bold px-5 py-2 rounded-xl hover:bg-indigo-100 transition">
+      Admin Login
+    </a>
+  </div>
 </header>
 
-<main class="max-w-6xl mx-auto p-6">
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto p-6">
 
-<input id="searchInput" placeholder="Naam ya Mobile Number"
-  class="w-full p-4 rounded-xl border mb-4">
+<!-- SEARCH FILTERS -->
+<div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-4 gap-4">
 
-<select id="districtFilter" class="w-full p-4 rounded-xl border mb-6">
-  <option value="">All Districts</option>
-  <option value="Lucknow">Lucknow</option>
-  <option value="Kanpur Nagar">Kanpur Nagar</option>
-  <option value="Varanasi">Varanasi</option>
-  <option value="Prayagraj">Prayagraj</option>
-</select>
+  <!-- NAME / PHONE -->
+  <input id="searchInput"
+    placeholder="Name or Mobile Number"
+    class="border p-3 rounded-xl">
 
-<div id="results" class="grid md:grid-cols-3 gap-6"></div>
+  <!-- DISTRICT -->
+  <select id="districtFilter" class="border p-3 rounded-xl">
+    <option value="">All Districts</option>
+    <option value="Lucknow">Lucknow</option>
+    <option value="Kanpur Nagar">Kanpur Nagar</option>
+    <option value="Varanasi">Varanasi</option>
+    <option value="Prayagraj">Prayagraj</option>
+    <option value="Meerut">Meerut</option>
+    <option value="Agra">Agra</option>
+  </select>
+
+  <!-- POST -->
+  <select id="postFilter" class="border p-3 rounded-xl">
+    <option value="">All Posts</option>
+    <option value="Assistant Accountant">Assistant Accountant</option>
+    <option value="Accountant">Accountant</option>
+    <option value="Assistant Account Officer">Assistant Account Officer</option>
+  </select>
+
+  <!-- SEARCH BUTTON -->
+  <button id="searchBtn"
+    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl">
+    Search
+  </button>
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+<!-- NO RESULT -->
+<div id="noResult" class="hidden text-center text-slate-500 mt-12">
+  <i class="fa-solid fa-user-slash text-4xl mb-3"></i>
+  <p class="font-semibold">No records found</p>
+</div>
 
 </main>
 
+<!-- FIREBASE + SEARCH LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
@@ -48,34 +91,47 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function load(){
-  const snap = await getDocs(collection(db,"employees"));
-  const res = document.getElementById("results");
-  const s = searchInput.value.toLowerCase();
-  const d = districtFilter.value;
+const results = document.getElementById("results");
+const noResult = document.getElementById("noResult");
 
-  res.innerHTML="";
-  snap.forEach(doc=>{
+async function performSearch() {
+  const text = searchInput.value.toLowerCase().trim();
+  const district = districtFilter.value;
+  const post = postFilter.value;
+
+  const snap = await getDocs(collection(db, "employees"));
+
+  results.innerHTML = "";
+  let found = 0;
+
+  snap.forEach(doc => {
     const e = doc.data();
-    if(
-      (!s || e.name.toLowerCase().includes(s) || e.phone.includes(s)) &&
-      (!d || e.district===d)
-    ){
-      res.innerHTML += `
-      <div class="bg-white p-5 rounded-xl shadow">
-        <h3 class="font-bold text-lg">${e.name}</h3>
-        <p>📞 ${e.phone}</p>
-        <p>🏢 ${e.office||""}</p>
-        <p>📍 ${e.district}</p>
-        <p class="font-semibold">${e.post}</p>
+
+    const matchText =
+      !text ||
+      e.name.toLowerCase().includes(text) ||
+      e.phone.includes(text);
+
+    const matchDistrict = !district || e.district === district;
+    const matchPost = !post || e.post === post;
+
+    if (matchText && matchDistrict && matchPost) {
+      found++;
+      results.innerHTML += `
+      <div class="bg-white p-5 rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="font-bold text-lg text-indigo-700">${e.name}</h3>
+        <p class="mt-1"><b>📞</b> ${e.phone}</p>
+        <p><b>📍</b> ${e.district}</p>
+        <p><b>🏢</b> ${e.office || ""}</p>
+        <p class="font-semibold text-slate-700">${e.post}</p>
       </div>`;
     }
   });
+
+  noResult.classList.toggle("hidden", found !== 0);
 }
 
-searchInput.oninput = load;
-districtFilter.onchange = load;
-load();
+searchBtn.onclick = performSearch;
 </script>
 
 </body>
