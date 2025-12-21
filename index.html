@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
@@ -17,6 +19,7 @@
 
 <h1 class="text-xl font-bold mb-4 text-center">Employee Verification</h1>
 
+<!-- DISTRICT -->
 <select id="district" class="border p-2 rounded w-full mb-3">
 <option value="">Select District</option>
 <option value="Agra">Agra</option>
@@ -78,26 +81,33 @@
 <option value="Moradabad">Moradabad</option>
 </select>
 
+<!-- OFFICE -->
 <select id="office" class="border p-2 rounded w-full mb-3">
 <option value="">Select Office</option>
 </select>
 
+<!-- EMPLOYEE -->
 <select id="employee" class="border p-2 rounded w-full mb-3">
 <option value="">Select Employee</option>
 </select>
 
+<!-- PHONE INFO -->
 <div id="phoneBox" class="hidden text-sm mb-3 text-gray-600"></div>
 
+<!-- reCAPTCHA -->
 <div id="recaptcha-container"></div>
 
+<!-- SEND OTP -->
 <button id="sendOtp"
  class="bg-indigo-600 text-white w-full p-3 rounded-xl font-bold hidden">
 Send OTP
 </button>
 
+<!-- OTP INPUT -->
 <input id="otp" placeholder="Enter OTP"
  class="border p-2 rounded w-full mt-4 hidden">
 
+<!-- VERIFY OTP -->
 <button id="verifyOtp"
  class="bg-green-600 text-white w-full p-3 rounded-xl font-bold mt-3 hidden">
 Verify OTP
@@ -108,19 +118,24 @@ Verify OTP
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
- getAuth, RecaptchaVerifier,
- signInWithPhoneNumber
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
- getFirestore, collection, getDocs, query, where
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE */
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
- apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
- authDomain: "antrik-lekha.firebaseapp.com",
- projectId: "antrik-lekha",
- appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
+  apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
+  authDomain: "antrik-lekha.firebaseapp.com",
+  projectId: "antrik-lekha",
+  appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -136,77 +151,115 @@ const sendOtp = document.getElementById("sendOtp");
 const otpInput = document.getElementById("otp");
 const verifyOtp = document.getElementById("verifyOtp");
 
-let confirmationResult;
 let selectedPhone = "";
+let confirmationResult;
+let recaptchaVerifier;
 
-/* LOAD OFFICES */
-district.onchange = async()=>{
- office.innerHTML = `<option value="">Select Office</option>`;
- employee.innerHTML = `<option value="">Select Employee</option>`;
- sendOtp.classList.add("hidden");
- phoneBox.classList.add("hidden");
+/* 🔐 INIT reCAPTCHA AFTER PAGE LOAD */
+window.onload = () => {
+  recaptchaVerifier = new RecaptchaVerifier(
+    auth,
+    'recaptcha-container',
+    { size: 'invisible' }
+  );
+};
 
- const q = query(collection(db,"employees"),
-  where("district","==",district.value));
+/* LOAD OFFICES BASED ON DISTRICT */
+district.onchange = async () => {
+  office.innerHTML = `<option value="">Select Office</option>`;
+  employee.innerHTML = `<option value="">Select Employee</option>`;
+  phoneBox.classList.add("hidden");
+  sendOtp.classList.add("hidden");
 
- const snap = await getDocs(q);
- const offices = [...new Set(snap.docs.map(d=>d.data().office))];
+  if (!district.value) return;
 
- offices.forEach(o=>{
-  const opt = document.createElement("option");
-  opt.textContent = o;
-  office.appendChild(opt);
- });
+  const q = query(
+    collection(db, "employees"),
+    where("district", "==", district.value)
+  );
+
+  const snap = await getDocs(q);
+  const offices = [...new Set(snap.docs.map(d => d.data().office))];
+
+  offices.forEach(o => {
+    if (!o) return;
+    const opt = document.createElement("option");
+    opt.textContent = o;
+    office.appendChild(opt);
+  });
 };
 
 /* LOAD EMPLOYEES */
-office.onchange = async()=>{
- employee.innerHTML = `<option value="">Select Employee</option>`;
- const q = query(collection(db,"employees"),
-  where("district","==",district.value),
-  where("office","==",office.value));
+office.onchange = async () => {
+  employee.innerHTML = `<option value="">Select Employee</option>`;
+  phoneBox.classList.add("hidden");
+  sendOtp.classList.add("hidden");
 
- const snap = await getDocs(q);
- snap.forEach(d=>{
-  const opt = document.createElement("option");
-  opt.value = d.data().phone;
-  opt.textContent = d.data().name;
-  employee.appendChild(opt);
- });
+  if (!office.value) return;
+
+  const q = query(
+    collection(db, "employees"),
+    where("district", "==", district.value),
+    where("office", "==", office.value)
+  );
+
+  const snap = await getDocs(q);
+  snap.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.data().phone;
+    opt.textContent = d.data().name;
+    employee.appendChild(opt);
+  });
 };
 
-/* SELECT EMPLOYEE */
-employee.onchange = ()=>{
- selectedPhone = employee.value;
- const masked = "+91 XXXXX" + selectedPhone.slice(-4);
- phoneBox.textContent = `OTP will be sent to ${masked}`;
- phoneBox.classList.remove("hidden");
- sendOtp.classList.remove("hidden");
+/* EMPLOYEE SELECT */
+employee.onchange = () => {
+  selectedPhone = employee.value;
+
+  if (!selectedPhone) return;
+
+  selectedPhone = selectedPhone.replace(/\D/g, "");
+  const masked = "+91 XXXXX" + selectedPhone.slice(-4);
+
+  phoneBox.textContent = `OTP will be sent to ${masked}`;
+  phoneBox.classList.remove("hidden");
+  sendOtp.classList.remove("hidden");
 };
 
-/* OTP */
-window.recaptchaVerifier = new RecaptchaVerifier(
- 'recaptcha-container',
- { size:'invisible' },
- auth
-);
+/* SEND OTP */
+sendOtp.onclick = async () => {
+  try {
+    if (selectedPhone.length !== 10) {
+      alert("Invalid mobile number");
+      return;
+    }
 
-sendOtp.onclick = async()=>{
- confirmationResult = await signInWithPhoneNumber(
-  auth,
-  "+91"+selectedPhone,
-  window.recaptchaVerifier
- );
- otpInput.classList.remove("hidden");
- verifyOtp.classList.remove("hidden");
+    confirmationResult = await signInWithPhoneNumber(
+      auth,
+      "+91" + selectedPhone,
+      recaptchaVerifier
+    );
+
+    otpInput.classList.remove("hidden");
+    verifyOtp.classList.remove("hidden");
+    alert("OTP sent successfully");
+
+  } catch (err) {
+    console.error("OTP ERROR:", err);
+    alert(err.message);
+  }
 };
 
-verifyOtp.onclick = async()=>{
- await confirmationResult.confirm(otpInput.value);
- location.href="public-dashboard.html";
+/* VERIFY OTP */
+verifyOtp.onclick = async () => {
+  try {
+    await confirmationResult.confirm(otpInput.value);
+    window.location.href = "public-dashboard.html";
+  } catch (err) {
+    alert("Invalid OTP");
+  }
 };
 </script>
 
 </body>
 </html>
-
