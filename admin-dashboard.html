@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>Admin Dashboard | Karmchari Khoj</title>
+<title>Admin Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -11,89 +11,71 @@
 
 <body class="bg-slate-100">
 
-<!-- HEADER -->
 <header class="bg-indigo-700 text-white p-4 flex justify-between items-center">
-  <h1 class="font-bold text-xl">Admin Dashboard</h1>
-  <button id="logoutBtn" class="bg-red-500 px-4 py-2 rounded-xl font-bold">
+  <h1 class="text-xl font-bold">Admin Dashboard</h1>
+  <button id="logoutBtn"
+    class="bg-red-500 px-4 py-2 rounded-xl font-bold">
     Logout
   </button>
 </header>
 
-<main class="p-6 max-w-7xl mx-auto">
+<main class="max-w-7xl mx-auto p-6">
 
-<!-- ADD / EDIT FORM -->
+<!-- FORM -->
 <div class="bg-white p-6 rounded-2xl shadow mb-8">
 <h2 class="font-bold text-lg mb-4">Add / Edit Employee</h2>
 
 <form id="empForm" class="grid md:grid-cols-3 gap-4">
-  <input id="docId" hidden>
+  <input type="hidden" id="docId">
 
-  <input id="name" placeholder="Name"
-    class="border p-2 rounded-xl" required>
+  <input id="nameInput" class="border p-2 rounded-xl" placeholder="Name" required>
+  <input id="phoneInput" class="border p-2 rounded-xl" placeholder="Phone" required>
 
-  <input id="phone" placeholder="Phone"
-    class="border p-2 rounded-xl" required>
-
-  <!-- DISTRICT -->
-  <select id="district" class="border p-2 rounded-xl" required>
+  <select id="districtInput" class="border p-2 rounded-xl" required>
     <option value="">Select District</option>
-    <option value="Agra">Agra</option>
-    <option value="Lucknow">Lucknow</option>
-    <option value="Kanpur Nagar">Kanpur Nagar</option>
-    <option value="Varanasi">Varanasi</option>
-    <option value="Prayagraj">Prayagraj</option>
-    <option value="Meerut">Meerut</option>
+    <option>Lucknow</option>
+    <option>Kanpur Nagar</option>
+    <option>Varanasi</option>
+    <option>Prayagraj</option>
+    <option>Agra</option>
   </select>
 
-  <input id="office" placeholder="Office / Posting"
-    class="border p-2 rounded-xl">
+  <input id="officeInput" class="border p-2 rounded-xl" placeholder="Office">
 
-  <!-- POST -->
-  <select id="post" class="border p-2 rounded-xl" required>
+  <select id="postInput" class="border p-2 rounded-xl" required>
     <option value="">Select Post</option>
-    <option value="Assistant Accountant">Assistant Accountant</option>
-    <option value="Accountant">Accountant</option>
-    <option value="Assistant Account Officer">Assistant Account Officer</option>
+    <option>Assistant Accountant</option>
+    <option>Accountant</option>
+    <option>Assistant Account Officer</option>
   </select>
 
-  <button
-    class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl font-bold col-span-3">
-    Save Record
+  <button class="bg-green-600 text-white p-3 rounded-xl font-bold col-span-3">
+    Save
   </button>
 </form>
 </div>
 
-<!-- EXCEL UPLOAD -->
+<!-- EXCEL -->
 <div class="bg-white p-6 rounded-2xl shadow mb-8">
-  <h2 class="font-bold text-lg mb-4">Upload Excel</h2>
-
-  <div class="flex gap-4 items-center">
-    <input type="file" id="excelFile" accept=".xlsx">
-
-    <button id="uploadExcelBtn"
-      class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl font-bold">
-      Upload Excel
-    </button>
-  </div>
-
-  <p class="text-xs text-slate-500 mt-3">
-    Required headings: <b>name, phone, district, office, post</b>
-  </p>
+<h2 class="font-bold text-lg mb-4">Upload Excel</h2>
+<input type="file" id="excelFile" accept=".xlsx">
+<button id="uploadExcelBtn"
+  class="bg-indigo-600 text-white px-4 py-2 rounded-xl ml-3">
+Upload
+</button>
 </div>
 
-<!-- RECORD LIST -->
+<!-- TABLE -->
 <div class="bg-white p-6 rounded-2xl shadow">
-<h2 class="font-bold text-lg mb-4">Employee Records</h2>
-
 <table class="w-full border text-sm">
 <thead class="bg-slate-100">
 <tr>
-<th class="p-2 border">Name</th>
-<th class="p-2 border">Phone</th>
-<th class="p-2 border">District</th>
-<th class="p-2 border">Office</th>
-<th class="p-2 border">Post</th>
-<th class="p-2 border">Action</th>
+<th class="border p-2">Name</th>
+<th class="border p-2">Phone</th>
+<th class="border p-2">District</th>
+<th class="border p-2">Office</th>
+<th class="border p-2">Post</th>
+<th class="border p-2">Action</th>
 </tr>
 </thead>
 <tbody id="list"></tbody>
@@ -104,14 +86,14 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
-  getFirestore, collection, addDoc, getDocs,
-  deleteDoc, doc, updateDoc
+  getFirestore, collection, getDocs,
+  addDoc, updateDoc, deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
   authDomain: "antrik-lekha.firebaseapp.com",
@@ -123,15 +105,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* AUTH CHECK */
-onAuthStateChanged(auth, user => {
-  if (!user) location.href = "admin-login.html";
+/* ELEMENTS */
+const empForm = document.getElementById("empForm");
+const docId = document.getElementById("docId");
+const nameInput = document.getElementById("nameInput");
+const phoneInput = document.getElementById("phoneInput");
+const districtInput = document.getElementById("districtInput");
+const officeInput = document.getElementById("officeInput");
+const postInput = document.getElementById("postInput");
+const list = document.getElementById("list");
+
+/* AUTH */
+onAuthStateChanged(auth, user=>{
+  if(!user) location.href="admin-login.html";
 });
+logoutBtn.onclick = ()=>signOut(auth);
 
-/* LOGOUT */
-logoutBtn.onclick = () => signOut(auth);
-
-/* LOAD DATA */
+/* LOAD */
 async function loadData(){
   list.innerHTML="";
   const snap = await getDocs(collection(db,"employees"));
@@ -144,50 +134,50 @@ async function loadData(){
       <td class="border p-2">${e.name}</td>
       <td class="border p-2">${e.phone}</td>
       <td class="border p-2">${e.district}</td>
-      <td class="border p-2">${e.office || ""}</td>
+      <td class="border p-2">${e.office||""}</td>
       <td class="border p-2">${e.post}</td>
       <td class="border p-2 space-x-2">
-        <button class="editBtn bg-yellow-400 px-3 py-1 rounded-xl">Edit</button>
-        <button class="deleteBtn bg-red-500 text-white px-3 py-1 rounded-xl">Delete</button>
+        <button class="edit bg-yellow-400 px-3 py-1 rounded">Edit</button>
+        <button class="del bg-red-500 text-white px-3 py-1 rounded">Delete</button>
       </td>
     `;
 
-    tr.querySelector(".editBtn").onclick = () => {
+    tr.querySelector(".edit").addEventListener("click", ()=>{
       docId.value = d.id;
-      name.value = e.name;
-      phone.value = e.phone;
-      district.value = e.district;
-      office.value = e.office || "";
-      post.value = e.post;
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+      nameInput.value = e.name;
+      phoneInput.value = e.phone;
+      districtInput.value = e.district;
+      officeInput.value = e.office||"";
+      postInput.value = e.post;
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
 
-    tr.querySelector(".deleteBtn").onclick = async () => {
-      if(confirm("Delete this record?")){
-        await deleteDoc(doc(db,"employees", d.id));
+    tr.querySelector(".del").addEventListener("click", async()=>{
+      if(confirm("Delete record?")){
+        await deleteDoc(doc(db,"employees",d.id));
         loadData();
       }
-    };
+    });
 
     list.appendChild(tr);
   });
 }
 loadData();
 
-/* ADD / UPDATE */
-empForm.onsubmit = async e => {
+/* SAVE */
+empForm.addEventListener("submit", async e=>{
   e.preventDefault();
 
   const data = {
-    name: name.value.trim(),
-    phone: phone.value.trim(),
-    district: district.value,
-    office: office.value.trim(),
-    post: post.value
+    name: nameInput.value.trim(),
+    phone: phoneInput.value.trim(),
+    district: districtInput.value,
+    office: officeInput.value.trim(),
+    post: postInput.value
   };
 
   if(docId.value){
-    await updateDoc(doc(db,"employees", docId.value), data);
+    await updateDoc(doc(db,"employees",docId.value), data);
   } else {
     await addDoc(collection(db,"employees"), data);
   }
@@ -195,41 +185,30 @@ empForm.onsubmit = async e => {
   empForm.reset();
   docId.value="";
   loadData();
-};
+});
 
-/* EXCEL UPLOAD */
-uploadExcelBtn.onclick = async () => {
+/* EXCEL */
+uploadExcelBtn.onclick = async()=>{
   const file = excelFile.files[0];
-  if (!file) return alert("Select Excel File");
+  if(!file) return alert("Select file");
 
-  try {
-    const buffer = await file.arrayBuffer();
-    const wb = XLSX.read(buffer, { type: "array" });
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf,{type:"array"});
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
 
-    let count = 0;
-    for (const r of rows) {
-      if (r.name && r.phone && r.district && r.post) {
-        await addDoc(collection(db,"employees"),{
-          name: String(r.name).trim(),
-          phone: String(r.phone).trim(),
-          district: String(r.district).trim(),
-          office: String(r.office || "").trim(),
-          post: String(r.post).trim()
-        });
-        count++;
-      }
+  for(const r of rows){
+    if(r.name && r.phone && r.district && r.post){
+      await addDoc(collection(db,"employees"),{
+        name:String(r.name),
+        phone:String(r.phone),
+        district:String(r.district),
+        office:String(r.office||""),
+        post:String(r.post)
+      });
     }
-
-    alert(`✅ ${count} records uploaded`);
-    excelFile.value="";
-    loadData();
-
-  } catch(err){
-    console.error(err);
-    alert("❌ Excel upload failed");
   }
+  excelFile.value="";
+  loadData();
 };
 </script>
 
