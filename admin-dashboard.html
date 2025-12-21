@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Karmchari Khoj</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body class="bg-slate-100">
+
+<!-- HEADER -->
+<header class="bg-indigo-700 text-white p-4 flex justify-between items-center">
+  <h1 class="font-bold text-xl">Admin Dashboard</h1>
+  <button id="logoutBtn" class="bg-red-500 px-4 py-2 rounded-xl font-bold">
+    Logout
+  </button>
+</header>
+
+<main class="p-6 max-w-7xl mx-auto">
+
+<!-- ADD / EDIT FORM -->
+<div class="bg-white p-6 rounded-2xl shadow mb-8">
+<h2 class="font-bold text-lg mb-4">Add / Edit Employee</h2>
+
+<form id="empForm" class="grid md:grid-cols-3 gap-4">
+  <input id="docId" hidden>
+
+  <input id="name" placeholder="Name"
+    class="border p-2 rounded-xl" required>
+
+  <input id="phone" placeholder="Phone"
+    class="border p-2 rounded-xl" required>
+
+  <!-- DISTRICT -->
+  <select id="district" class="border p-2 rounded-xl" required>
+    <option value="">Select District</option>
+    <option value="Agra">Agra</option>
+    <option value="Lucknow">Lucknow</option>
+    <option value="Kanpur Nagar">Kanpur Nagar</option>
+    <option value="Varanasi">Varanasi</option>
+    <option value="Prayagraj">Prayagraj</option>
+    <option value="Meerut">Meerut</option>
+  </select>
+
+  <input id="office" placeholder="Office / Posting"
+    class="border p-2 rounded-xl">
+
+  <!-- POST -->
+  <select id="post" class="border p-2 rounded-xl" required>
+    <option value="">Select Post</option>
+    <option value="Assistant Accountant">Assistant Accountant</option>
+    <option value="Accountant">Accountant</option>
+    <option value="Assistant Account Officer">Assistant Account Officer</option>
+  </select>
+
+  <button
+    class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl font-bold col-span-3">
+    Save Record
+  </button>
+</form>
+</div>
+
+<!-- EXCEL UPLOAD -->
+<div class="bg-white p-6 rounded-2xl shadow mb-8">
+  <h2 class="font-bold text-lg mb-4">Upload Excel</h2>
+
+  <div class="flex gap-4 items-center">
+    <input type="file" id="excelFile" accept=".xlsx">
+
+    <button id="uploadExcelBtn"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl font-bold">
+      Upload Excel
+    </button>
+  </div>
+
+  <p class="text-xs text-slate-500 mt-3">
+    Required headings: <b>name, phone, district, office, post</b>
+  </p>
+</div>
+
+<!-- RECORD LIST -->
+<div class="bg-white p-6 rounded-2xl shadow">
+<h2 class="font-bold text-lg mb-4">Employee Records</h2>
+
+<table class="w-full border text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-2 border">Name</th>
+<th class="p-2 border">Phone</th>
+<th class="p-2 border">District</th>
+<th class="p-2 border">Office</th>
+<th class="p-2 border">Post</th>
+<th class="p-2 border">Action</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+</div>
+
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, getDocs,
+  deleteDoc, doc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
+  authDomain: "antrik-lekha.firebaseapp.com",
+  projectId: "antrik-lekha",
+  appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* AUTH CHECK */
+onAuthStateChanged(auth, user => {
+  if (!user) location.href = "admin-login.html";
+});
+
+/* LOGOUT */
+logoutBtn.onclick = () => signOut(auth);
+
+/* LOAD DATA */
+async function loadData(){
+  list.innerHTML="";
+  const snap = await getDocs(collection(db,"employees"));
+
+  snap.forEach(d=>{
+    const e = d.data();
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td class="border p-2">${e.name}</td>
+      <td class="border p-2">${e.phone}</td>
+      <td class="border p-2">${e.district}</td>
+      <td class="border p-2">${e.office || ""}</td>
+      <td class="border p-2">${e.post}</td>
+      <td class="border p-2 space-x-2">
+        <button class="editBtn bg-yellow-400 px-3 py-1 rounded-xl">Edit</button>
+        <button class="deleteBtn bg-red-500 text-white px-3 py-1 rounded-xl">Delete</button>
+      </td>
+    `;
+
+    tr.querySelector(".editBtn").onclick = () => {
+      docId.value = d.id;
+      name.value = e.name;
+      phone.value = e.phone;
+      district.value = e.district;
+      office.value = e.office || "";
+      post.value = e.post;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    tr.querySelector(".deleteBtn").onclick = async () => {
+      if(confirm("Delete this record?")){
+        await deleteDoc(doc(db,"employees", d.id));
+        loadData();
+      }
+    };
+
+    list.appendChild(tr);
+  });
+}
+loadData();
+
+/* ADD / UPDATE */
+empForm.onsubmit = async e => {
+  e.preventDefault();
+
+  const data = {
+    name: name.value.trim(),
+    phone: phone.value.trim(),
+    district: district.value,
+    office: office.value.trim(),
+    post: post.value
+  };
+
+  if(docId.value){
+    await updateDoc(doc(db,"employees", docId.value), data);
+  } else {
+    await addDoc(collection(db,"employees"), data);
+  }
+
+  empForm.reset();
+  docId.value="";
+  loadData();
+};
+
+/* EXCEL UPLOAD */
+uploadExcelBtn.onclick = async () => {
+  const file = excelFile.files[0];
+  if (!file) return alert("Select Excel File");
+
+  try {
+    const buffer = await file.arrayBuffer();
+    const wb = XLSX.read(buffer, { type: "array" });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+    let count = 0;
+    for (const r of rows) {
+      if (r.name && r.phone && r.district && r.post) {
+        await addDoc(collection(db,"employees"),{
+          name: String(r.name).trim(),
+          phone: String(r.phone).trim(),
+          district: String(r.district).trim(),
+          office: String(r.office || "").trim(),
+          post: String(r.post).trim()
+        });
+        count++;
+      }
+    }
+
+    alert(`✅ ${count} records uploaded`);
+    excelFile.value="";
+    loadData();
+
+  } catch(err){
+    console.error(err);
+    alert("❌ Excel upload failed");
+  }
+};
+</script>
+
+</body>
+</html>

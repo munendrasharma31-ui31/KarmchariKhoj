@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Karmchari Khoj | Public Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></script>
+</head>
+
+<body class="bg-slate-100">
+
+<header class="bg-indigo-700 text-white text-center py-6">
+  <h1 class="text-3xl font-bold">Karmchari Khoj Portal</h1>
+  <p class="opacity-90">UP Lekha Samvarg Employees Directory</p>
+</header>
+
+<main class="max-w-6xl mx-auto p-6">
+
+<input id="searchInput" placeholder="Naam ya Mobile Number"
+  class="w-full p-4 rounded-xl border mb-4">
+
+<select id="districtFilter" class="w-full p-4 rounded-xl border mb-6">
+  <option value="">All Districts</option>
+  <option value="Lucknow">Lucknow</option>
+  <option value="Kanpur Nagar">Kanpur Nagar</option>
+  <option value="Varanasi">Varanasi</option>
+  <option value="Prayagraj">Prayagraj</option>
+</select>
+
+<div id="results" class="grid md:grid-cols-3 gap-6"></div>
+
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
+  authDomain: "antrik-lekha.firebaseapp.com",
+  projectId: "antrik-lekha",
+  appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function load(){
+  const snap = await getDocs(collection(db,"employees"));
+  const res = document.getElementById("results");
+  const s = searchInput.value.toLowerCase();
+  const d = districtFilter.value;
+
+  res.innerHTML="";
+  snap.forEach(doc=>{
+    const e = doc.data();
+    if(
+      (!s || e.name.toLowerCase().includes(s) || e.phone.includes(s)) &&
+      (!d || e.district===d)
+    ){
+      res.innerHTML += `
+      <div class="bg-white p-5 rounded-xl shadow">
+        <h3 class="font-bold text-lg">${e.name}</h3>
+        <p>📞 ${e.phone}</p>
+        <p>🏢 ${e.office||""}</p>
+        <p>📍 ${e.district}</p>
+        <p class="font-semibold">${e.post}</p>
+      </div>`;
+    }
+  });
+}
+
+searchInput.oninput = load;
+districtFilter.onchange = load;
+load();
+</script>
+
+</body>
+</html>
