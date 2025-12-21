@@ -119,7 +119,10 @@ const list = document.getElementById("list");
 onAuthStateChanged(auth, user=>{
   if(!user) location.href="admin-login.html";
 });
-logoutBtn.onclick = ()=>signOut(auth);
+logoutBtn.onclick = async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+};
 
 /* LOAD */
 async function loadData(){
@@ -214,3 +217,4 @@ uploadExcelBtn.onclick = async()=>{
 
 </body>
 </html>
+
