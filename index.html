@@ -2,114 +2,54 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>Employee Verification</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Employee Verification</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<style>
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+</style>
 </head>
-
 <body class="bg-slate-100 flex items-center justify-center min-h-screen">
 
 <div class="bg-white p-6 rounded-2xl shadow max-w-md w-full">
 
 <h1 class="text-xl font-bold mb-4 text-center">Employee Verification</h1>
 
-<!-- DISTRICT -->
+<!-- District Dropdown -->
 <select id="district" class="border p-2 rounded w-full mb-3">
-<option value="">Select District</option>
-<option value="Agra">Agra</option>
-<option value="Aligarh">Aligarh</option>
-<option value="Ambedkar Nagar">Ambedkar Nagar</option>
-<option value="Amethi">Amethi</option>
-<option value="Amroha">Amroha</option>
-<option value="Auraiya">Auraiya</option>
-<option value="Ayodhya">Ayodhya</option>
-<option value="Azamgarh">Azamgarh</option>
-<option value="Baghpat">Baghpat</option>
-<option value="Bahraich">Bahraich</option>
-<option value="Ballia">Ballia</option>
-<option value="Balrampur">Balrampur</option>
-<option value="Banda">Banda</option>
-<option value="Barabanki">Barabanki</option>
-<option value="Bareilly">Bareilly</option>
-<option value="Basti">Basti</option>
-<option value="Bhadohi">Bhadohi</option>
-<option value="Bijnor">Bijnor</option>
-<option value="Budaun">Budaun</option>
-<option value="Bulandshahr">Bulandshahr</option>
-<option value="Chandauli">Chandauli</option>
-<option value="Chitrakoot">Chitrakoot</option>
-<option value="Deoria">Deoria</option>
-<option value="Etah">Etah</option>
-<option value="Etawah">Etawah</option>
-<option value="Farrukhabad">Farrukhabad</option>
-<option value="Fatehpur">Fatehpur</option>
-<option value="Firozabad">Firozabad</option>
-<option value="Gautam Buddha Nagar">Gautam Buddha Nagar</option>
-<option value="Ghaziabad">Ghaziabad</option>
-<option value="Ghazipur">Ghazipur</option>
-<option value="Gonda">Gonda</option>
-<option value="Gorakhpur">Gorakhpur</option>
-<option value="Hamirpur">Hamirpur</option>
-<option value="Hapur">Hapur</option>
-<option value="Hardoi">Hardoi</option>
-<option value="Hathras">Hathras</option>
-<option value="Jalaun">Jalaun</option>
-<option value="Jaunpur">Jaunpur</option>
-<option value="Jhansi">Jhansi</option>
-<option value="Kannauj">Kannauj</option>
-<option value="Kanpur Dehat">Kanpur Dehat</option>
-<option value="Kanpur Nagar">Kanpur Nagar</option>
-<option value="Kasganj">Kasganj</option>
-<option value="Kaushambi">Kaushambi</option>
-<option value="Kushinagar">Kushinagar</option>
-<option value="Lakhimpur Kheri">Lakhimpur Kheri</option>
-<option value="Lalitpur">Lalitpur</option>
-<option value="Lucknow">Lucknow</option>
-<option value="Maharajganj">Maharajganj</option>
-<option value="Mahoba">Mahoba</option>
-<option value="Mainpuri">Mainpuri</option>
-<option value="Mathura">Mathura</option>
-<option value="Mau">Mau</option>
-<option value="Meerut">Meerut</option>
-<option value="Mirzapur">Mirzapur</option>
-<option value="Moradabad">Moradabad</option>
+  <option value="">Select District</option>
+  <option value="Lucknow">लखनऊ (Lucknow)</option>
+  <option value="Kanpur Nagar">कानपुर नगर (Kanpur Nagar)</option>
+  <option value="Varanasi">वाराणसी (Varanasi)</option>
+  <option value="Agra">आगरा (Agra)</option>
 </select>
 
-<!-- OFFICE -->
+<!-- Office Dropdown -->
 <select id="office" class="border p-2 rounded w-full mb-3">
-<option value="">Select Office</option>
+  <option value="">Select Office</option>
 </select>
 
-<!-- EMPLOYEE -->
+<!-- Employee Dropdown -->
 <select id="employee" class="border p-2 rounded w-full mb-3">
-<option value="">Select Employee</option>
+  <option value="">Select Employee</option>
 </select>
 
-<!-- PHONE INFO -->
+<!-- Phone Info -->
 <div id="phoneBox" class="hidden text-sm mb-3 text-gray-600"></div>
 
 <!-- reCAPTCHA -->
 <div id="recaptcha-container"></div>
 
-<!-- SEND OTP -->
-<button id="sendOtp"
- class="bg-indigo-600 text-white w-full p-3 rounded-xl font-bold hidden">
+<!-- Send OTP -->
+<button id="sendOtp" class="bg-indigo-600 text-white w-full p-3 rounded-xl font-bold hidden">
 Send OTP
 </button>
 
-<!-- OTP INPUT -->
-<input id="otp" placeholder="Enter OTP"
- class="border p-2 rounded w-full mt-4 hidden">
+<!-- OTP Input -->
+<input id="otp" placeholder="Enter OTP" class="border p-2 rounded w-full mt-4 hidden">
 
-<!-- VERIFY OTP -->
-<button id="verifyOtp"
- class="bg-green-600 text-white w-full p-3 rounded-xl font-bold mt-3 hidden">
+<!-- Verify OTP -->
+<button id="verifyOtp" class="bg-green-600 text-white w-full p-3 rounded-xl font-bold mt-3 hidden">
 Verify OTP
 </button>
 
@@ -117,20 +57,10 @@ Verify OTP
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* 🔥 FIREBASE CONFIG */
+/* Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
   authDomain: "antrik-lekha.firebaseapp.com",
@@ -142,7 +72,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ELEMENTS */
+/* Elements */
 const district = document.getElementById("district");
 const office = document.getElementById("office");
 const employee = document.getElementById("employee");
@@ -155,16 +85,12 @@ let selectedPhone = "";
 let confirmationResult;
 let recaptchaVerifier;
 
-/* 🔐 INIT reCAPTCHA AFTER PAGE LOAD */
+/* Init reCAPTCHA */
 window.onload = () => {
-  recaptchaVerifier = new RecaptchaVerifier(
-    auth,
-    'recaptcha-container',
-    { size: 'invisible' }
-  );
+  recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
 };
 
-/* LOAD OFFICES BASED ON DISTRICT */
+/* Load Offices based on District */
 district.onchange = async () => {
   office.innerHTML = `<option value="">Select Office</option>`;
   employee.innerHTML = `<option value="">Select Employee</option>`;
@@ -173,23 +99,28 @@ district.onchange = async () => {
 
   if (!district.value) return;
 
-  const q = query(
-    collection(db, "employees"),
-    where("district", "==", district.value)
-  );
+  try {
+    const q = query(collection(db, "employees"), where("district", "==", district.value));
+    const snap = await getDocs(q);
 
-  const snap = await getDocs(q);
-  const offices = [...new Set(snap.docs.map(d => d.data().office))];
+    const offices = [...new Set(
+      snap.docs.map(d => d.data().office).filter(o => o && o.trim() !== "")
+    )];
 
-  offices.forEach(o => {
-    if (!o) return;
-    const opt = document.createElement("option");
-    opt.textContent = o;
-    office.appendChild(opt);
-  });
+    offices.forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      office.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error("Error fetching offices:", err);
+    alert("Failed to load offices. Check console.");
+  }
 };
 
-/* LOAD EMPLOYEES */
+/* Load Employees based on Office */
 office.onchange = async () => {
   employee.innerHTML = `<option value="">Select Employee</option>`;
   phoneBox.classList.add("hidden");
@@ -197,22 +128,28 @@ office.onchange = async () => {
 
   if (!office.value) return;
 
-  const q = query(
-    collection(db, "employees"),
-    where("district", "==", district.value),
-    where("office", "==", office.value)
-  );
+  try {
+    const q = query(
+      collection(db, "employees"),
+      where("district", "==", district.value),
+      where("office", "==", office.value)
+    );
 
-  const snap = await getDocs(q);
-  snap.forEach(d => {
-    const opt = document.createElement("option");
-    opt.value = d.data().phone;
-    opt.textContent = d.data().name;
-    employee.appendChild(opt);
-  });
+    const snap = await getDocs(q);
+
+    snap.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d.data().phone;
+      opt.textContent = d.data().name;
+      employee.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error("Error fetching employees:", err);
+  }
 };
 
-/* EMPLOYEE SELECT */
+/* Employee selection */
 employee.onchange = () => {
   selectedPhone = employee.value;
 
@@ -226,7 +163,7 @@ employee.onchange = () => {
   sendOtp.classList.remove("hidden");
 };
 
-/* SEND OTP */
+/* Send OTP */
 sendOtp.onclick = async () => {
   try {
     if (selectedPhone.length !== 10) {
@@ -234,11 +171,7 @@ sendOtp.onclick = async () => {
       return;
     }
 
-    confirmationResult = await signInWithPhoneNumber(
-      auth,
-      "+91" + selectedPhone,
-      recaptchaVerifier
-    );
+    confirmationResult = await signInWithPhoneNumber(auth, "+91" + selectedPhone, recaptchaVerifier);
 
     otpInput.classList.remove("hidden");
     verifyOtp.classList.remove("hidden");
@@ -250,7 +183,7 @@ sendOtp.onclick = async () => {
   }
 };
 
-/* VERIFY OTP */
+/* Verify OTP */
 verifyOtp.onclick = async () => {
   try {
     await confirmationResult.confirm(otpInput.value);
