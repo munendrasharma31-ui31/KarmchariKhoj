@@ -42,12 +42,12 @@ if (sessionStorage.getItem("empAuth") !== "true") {
 <main class="max-w-5xl mx-auto p-6">
 
 <!-- FILTERS -->
-<div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-4 gap-4">
+<div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-5 gap-4">
 
   <!-- DISTRICT -->
   <select id="districtSelect" class="border p-3 rounded-xl">
     <option value="">Select District</option>
-    <option value="Agra">Agra</option>
+   <option value="Agra">Agra</option>
 <option value="Aligarh">Aligarh</option>
 <option value="Ambedkar Nagar">Ambedkar Nagar</option>
 <option value="Amethi">Amethi</option>
@@ -129,6 +129,14 @@ if (sessionStorage.getItem("empAuth") !== "true") {
     <option value="">Select Office</option>
   </select>
 
+  <!-- POST (NEW) -->
+  <select id="postSelect" class="border p-3 rounded-xl">
+    <option value="">Select Post</option>
+    <option value="Assistant Accountant">Assistant Accountant</option>
+    <option value="Accountant">Accountant</option>
+    <option value="Assistant Account Officer">Assistant Account Officer</option>
+  </select>
+
   <!-- EMPLOYEE -->
   <select id="employeeSelect" class="border p-3 rounded-xl">
     <option value="">Select Employee</option>
@@ -167,7 +175,9 @@ import {
   collection,
   getDocs,
   query,
-  where
+  where,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE CONFIG */
@@ -184,6 +194,7 @@ const db = getFirestore(app);
 /* ELEMENTS */
 const districtSelect = document.getElementById("districtSelect");
 const officeSelect = document.getElementById("officeSelect");
+const postSelect = document.getElementById("postSelect");
 const employeeSelect = document.getElementById("employeeSelect");
 
 const resultArea = document.getElementById("resultArea");
@@ -202,6 +213,7 @@ document.getElementById("userName").innerText =
 /* 1️⃣ DISTRICT → LOAD OFFICES */
 districtSelect.onchange = async () => {
   officeSelect.innerHTML = `<option value="">Select Office</option>`;
+  postSelect.value = "";
   employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
   resultArea.classList.add("hidden");
   noResult.classList.add("hidden");
@@ -226,15 +238,15 @@ districtSelect.onchange = async () => {
   });
 };
 
-/* 2️⃣ OFFICE → LOAD EMPLOYEES */
-officeSelect.onchange = async () => {
+/* 2️⃣ OFFICE / POST → LOAD EMPLOYEES */
+async function loadEmployees() {
   employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
   resultArea.classList.add("hidden");
   noResult.classList.add("hidden");
 
-  if (!officeSelect.value) return;
+  if (!districtSelect.value || !officeSelect.value) return;
 
-  const q = query(
+  let q = query(
     collection(db, "employees"),
     where("district", "==", districtSelect.value),
     where("office", "==", officeSelect.value)
@@ -243,12 +255,18 @@ officeSelect.onchange = async () => {
   const snap = await getDocs(q);
 
   snap.forEach(d => {
+    const e = d.data();
+    if (postSelect.value && e.post !== postSelect.value) return;
+
     const opt = document.createElement("option");
     opt.value = d.id;
-    opt.textContent = d.data().name;
+    opt.textContent = e.name;
     employeeSelect.appendChild(opt);
   });
-};
+}
+
+officeSelect.onchange = loadEmployees;
+postSelect.onchange = loadEmployees;
 
 /* 3️⃣ SEARCH → SHOW DETAILS */
 searchBtn.onclick = async () => {
@@ -260,19 +278,16 @@ searchBtn.onclick = async () => {
     return;
   }
 
-  const q = query(
-    collection(db, "employees"),
-    where("__name__", "==", employeeSelect.value)
+  const snap = await getDoc(
+    doc(db, "employees", employeeSelect.value)
   );
 
-  const snap = await getDocs(q);
-
-  if (snap.empty) {
+  if (!snap.exists()) {
     noResult.classList.remove("hidden");
     return;
   }
 
-  const e = snap.docs[0].data();
+  const e = snap.data();
 
   empName.innerText = e.name;
   empPhone.innerText = e.phone;
