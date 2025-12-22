@@ -1,48 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Public Dashboard</title>
+<title>Employee Directory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 </head>
 
-<body class="p-6">
+<body class="bg-slate-100 p-6">
 
-<h1 class="text-xl font-bold mb-4">Employee Directory</h1>
-<div id="list" class="grid md:grid-cols-3 gap-4"></div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore,collection,getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
- apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
- authDomain: "antrik-lekha.firebaseapp.com",
- projectId: "antrik-lekha",
- appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-onAuthStateChanged(auth, async user=>{
- if(!user) location.href="index.html";
-
- const snap = await getDocs(collection(db,"employees"));
- snap.forEach(d=>{
-  list.innerHTML += `
-   <div class="border p-4 rounded-xl">
-    <h2 class="font-bold">${d.data().name}</h2>
-    <p>${d.data().district}</p>
-    <p>${d.data().office}</p>
-    <p>${d.data().phone}</p>
-   </div>`;
- });
-});
+<script>
+if (sessionStorage.getItem("empAuth") !== "true") {
+  location.href = "index.html";
+}
 </script>
+
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow">
+
+<h1 class="text-xl font-bold mb-2">Welcome</h1>
+<p class="mb-4 text-slate-600" id="userName"></p>
+
+<button onclick="logout()"
+ class="bg-red-500 text-white px-4 py-2 rounded-xl mb-4">
+Logout
+</button>
+
+<div id="content">
+<p class="text-slate-700">
+You are successfully logged in using password based verification.
+</p>
+</div>
+
+</div>
+
+<script>
+document.getElementById("userName").innerText =
+  sessionStorage.getItem("empName");
+
+function logout() {
+  sessionStorage.clear();
+  location.href = "index.html";
+}
+</script>
+
 </body>
 </html>
