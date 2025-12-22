@@ -1,45 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-<title>Employee Directory</title>
+<meta charset="UTF-8">
+<title>Karmchari Khoj | Public Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></script>
 </head>
 
-<body class="bg-slate-100 p-6">
+<body class="bg-slate-100">
 
+<!-- 🔐 SESSION CHECK -->
 <script>
 if (sessionStorage.getItem("empAuth") !== "true") {
   location.href = "index.html";
 }
 </script>
 
-<div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow">
+<!-- HEADER -->
+<header class="bg-indigo-700 text-white py-4">
+  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold">Karmchari Khoj Portal</h1>
+      <p class="text-sm opacity-90">Public Employee Dashboard</p>
+    </div>
 
-<h1 class="text-xl font-bold mb-2">Welcome</h1>
-<p class="mb-4 text-slate-600" id="userName"></p>
+    <div class="flex items-center gap-4">
+      <span class="text-sm">
+        👤 <b id="userName"></b>
+      </span>
+      <button onclick="logout()"
+        class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl font-bold">
+        Logout
+      </button>
+    </div>
+  </div>
+</header>
 
-<button onclick="logout()"
- class="bg-red-500 text-white px-4 py-2 rounded-xl mb-4">
-Logout
-</button>
+<!-- MAIN -->
+<main class="max-w-5xl mx-auto p-6">
 
-<div id="content">
-<p class="text-slate-700">
-You are successfully logged in using password based verification.
-</p>
+<!-- FILTERS -->
+<div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-4 gap-4">
+
+  <!-- DISTRICT -->
+  <select id="districtSelect" class="border p-3 rounded-xl">
+    <option value="">Select District</option>
+    <option value="Agra">Agra</option>
+<option value="Aligarh">Aligarh</option>
+<option value="Ambedkar Nagar">Ambedkar Nagar</option>
+<option value="Amethi">Amethi</option>
+<option value="Amroha">Amroha</option>
+<option value="Auraiya">Auraiya</option>
+<option value="Ayodhya">Ayodhya</option>
+<option value="Azamgarh">Azamgarh</option>
+<option value="Baghpat">Baghpat</option>
+<option value="Bahraich">Bahraich</option>
+<option value="Ballia">Ballia</option>
+<option value="Balrampur">Balrampur</option>
+<option value="Banda">Banda</option>
+<option value="Barabanki">Barabanki</option>
+<option value="Bareilly">Bareilly</option>
+<option value="Basti">Basti</option>
+<option value="Bhadohi">Bhadohi</option>
+<option value="Bijnor">Bijnor</option>
+<option value="Budaun">Budaun</option>
+<option value="Bulandshahr">Bulandshahr</option>
+<option value="Chandauli">Chandauli</option>
+<option value="Chitrakoot">Chitrakoot</option>
+<option value="Deoria">Deoria</option>
+<option value="Etah">Etah</option>
+<option value="Etawah">Etawah</option>
+<option value="Farrukhabad">Farrukhabad</option>
+<option value="Fatehpur">Fatehpur</option>
+<option value="Firozabad">Firozabad</option>
+<option value="Gautam Buddha Nagar">Gautam Buddha Nagar</option>
+<option value="Ghaziabad">Ghaziabad</option>
+<option value="Ghazipur">Ghazipur</option>
+<option value="Gonda">Gonda</option>
+<option value="Gorakhpur">Gorakhpur</option>
+<option value="Hamirpur">Hamirpur</option>
+<option value="Hapur">Hapur</option>
+<option value="Hardoi">Hardoi</option>
+<option value="Hathras">Hathras</option>
+<option value="Jalaun">Jalaun</option>
+<option value="Jaunpur">Jaunpur</option>
+<option value="Jhansi">Jhansi</option>
+<option value="Kannauj">Kannauj</option>
+<option value="Kanpur Dehat">Kanpur Dehat</option>
+<option value="Kanpur Nagar">Kanpur Nagar</option>
+<option value="Kasganj">Kasganj</option>
+<option value="Kaushambi">Kaushambi</option>
+<option value="Kushinagar">Kushinagar</option>
+<option value="Lakhimpur Kheri">Lakhimpur Kheri</option>
+<option value="Lalitpur">Lalitpur</option>
+<option value="Lucknow">Lucknow</option>
+<option value="Maharajganj">Maharajganj</option>
+<option value="Mahoba">Mahoba</option>
+<option value="Mainpuri">Mainpuri</option>
+<option value="Mathura">Mathura</option>
+<option value="Mau">Mau</option>
+<option value="Meerut">Meerut</option>
+<option value="Mirzapur">Mirzapur</option>
+<option value="Moradabad">Moradabad</option>
+<option value="Muzaffarnagar">Muzaffarnagar</option>
+<option value="Pilibhit">Pilibhit</option>
+<option value="Pratapgarh">Pratapgarh</option>
+<option value="Prayagraj">Prayagraj</option>
+<option value="Rae Bareli">Rae Bareli</option>
+<option value="Rampur">Rampur</option>
+<option value="Saharanpur">Saharanpur</option>
+<option value="Sambhal">Sambhal</option>
+<option value="Sant Kabir Nagar">Sant Kabir Nagar</option>
+<option value="Shahjahanpur">Shahjahanpur</option>
+<option value="Shamli">Shamli</option>
+<option value="Shravasti">Shravasti</option>
+<option value="Siddharthnagar">Siddharthnagar</option>
+<option value="Sitapur">Sitapur</option>
+<option value="Sonbhadra">Sonbhadra</option>
+<option value="Sultanpur">Sultanpur</option>
+<option value="Unnao">Unnao</option>
+<option value="Varanasi">Varanasi</option>
+  </select>
+
+  <!-- OFFICE -->
+  <select id="officeSelect" class="border p-3 rounded-xl">
+    <option value="">Select Office</option>
+  </select>
+
+  <!-- EMPLOYEE -->
+  <select id="employeeSelect" class="border p-3 rounded-xl">
+    <option value="">Select Employee</option>
+  </select>
+
+  <!-- SEARCH -->
+  <button id="searchBtn"
+    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl">
+    Search
+  </button>
 </div>
 
+<!-- RESULT -->
+<div id="resultArea" class="hidden">
+  <div class="bg-white p-6 rounded-2xl shadow">
+    <h3 id="empName" class="text-xl font-bold text-indigo-700"></h3>
+    <p class="mt-2"><b>📞 Mobile:</b> <span id="empPhone"></span></p>
+    <p><b>📍 District:</b> <span id="empDistrict"></span></p>
+    <p><b>🏢 Office:</b> <span id="empOffice"></span></p>
+    <p><b>👔 Post:</b> <span id="empPost"></span></p>
+  </div>
 </div>
 
-<script>
+<div id="noResult" class="hidden text-center text-slate-500 mt-12">
+  <i class="fa-solid fa-user-slash text-4xl mb-3"></i>
+  <p class="font-semibold">No record found</p>
+</div>
+
+</main>
+
+<!-- FIREBASE LOGIC -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
+  authDomain: "antrik-lekha.firebaseapp.com",
+  projectId: "antrik-lekha",
+  appId: "1:82198306544:web:bfb58e6c8d03f7d664ac35"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* ELEMENTS */
+const districtSelect = document.getElementById("districtSelect");
+const officeSelect = document.getElementById("officeSelect");
+const employeeSelect = document.getElementById("employeeSelect");
+
+const resultArea = document.getElementById("resultArea");
+const noResult = document.getElementById("noResult");
+
+const empName = document.getElementById("empName");
+const empPhone = document.getElementById("empPhone");
+const empDistrict = document.getElementById("empDistrict");
+const empOffice = document.getElementById("empOffice");
+const empPost = document.getElementById("empPost");
+
+/* USER NAME */
 document.getElementById("userName").innerText =
-  sessionStorage.getItem("empName");
+  sessionStorage.getItem("empName") || "";
 
-function logout() {
+/* 1️⃣ DISTRICT → LOAD OFFICES */
+districtSelect.onchange = async () => {
+  officeSelect.innerHTML = `<option value="">Select Office</option>`;
+  employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
+  resultArea.classList.add("hidden");
+  noResult.classList.add("hidden");
+
+  if (!districtSelect.value) return;
+
+  const q = query(
+    collection(db, "employees"),
+    where("district", "==", districtSelect.value)
+  );
+
+  const snap = await getDocs(q);
+  const offices = [...new Set(
+    snap.docs.map(d => d.data().office).filter(Boolean)
+  )];
+
+  offices.forEach(o => {
+    const opt = document.createElement("option");
+    opt.value = o;
+    opt.textContent = o;
+    officeSelect.appendChild(opt);
+  });
+};
+
+/* 2️⃣ OFFICE → LOAD EMPLOYEES */
+officeSelect.onchange = async () => {
+  employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
+  resultArea.classList.add("hidden");
+  noResult.classList.add("hidden");
+
+  if (!officeSelect.value) return;
+
+  const q = query(
+    collection(db, "employees"),
+    where("district", "==", districtSelect.value),
+    where("office", "==", officeSelect.value)
+  );
+
+  const snap = await getDocs(q);
+
+  snap.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.id;
+    opt.textContent = d.data().name;
+    employeeSelect.appendChild(opt);
+  });
+};
+
+/* 3️⃣ SEARCH → SHOW DETAILS */
+searchBtn.onclick = async () => {
+  resultArea.classList.add("hidden");
+  noResult.classList.add("hidden");
+
+  if (!employeeSelect.value) {
+    alert("Please select employee");
+    return;
+  }
+
+  const q = query(
+    collection(db, "employees"),
+    where("__name__", "==", employeeSelect.value)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    noResult.classList.remove("hidden");
+    return;
+  }
+
+  const e = snap.docs[0].data();
+
+  empName.innerText = e.name;
+  empPhone.innerText = e.phone;
+  empDistrict.innerText = e.district;
+  empOffice.innerText = e.office;
+  empPost.innerText = e.post;
+
+  resultArea.classList.remove("hidden");
+};
+
+/* LOGOUT */
+window.logout = () => {
   sessionStorage.clear();
   location.href = "index.html";
-}
+};
 </script>
 
 </body>
