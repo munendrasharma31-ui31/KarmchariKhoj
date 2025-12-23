@@ -40,11 +40,14 @@ if (sessionStorage.getItem("empAuth") !== "true") {
 
 <!-- MAIN -->
 <main class="max-w-5xl mx-auto p-6">
-<img
-  src="logo.png"
-  alt="Karmchari Khoj Logo"
-  class="h-42 w-auto object-contain"
-/>
+<div class="flex justify-center items-center h-42">
+  <img
+    src="logo.png"
+    alt="Karmchari Khoj Logo"
+    class="h-42 w-auto object-contain"
+  />
+</div>
+
 <!-- FILTERS -->
 <div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-5 gap-4">
 
@@ -311,5 +314,6 @@ window.logout = () => {
 
 </body>
 </html>
+
 
 
