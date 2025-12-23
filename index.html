@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>Employee Login</title>
+<title>UPIAAD | Employee Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -10,126 +10,62 @@
 <body class="bg-slate-100 flex items-center justify-center min-h-screen">
 
 <div class="bg-white p-6 rounded-2xl shadow max-w-md w-full">
-<!-- LOGO -->
-<div class="flex flex-col items-center justify-center mb-6">
-  <img
-    src="up.png"
-    alt="आन्तरिक लेखा एवं लेखा परीक्षा निदेशालय"
-    class="h-40 w-auto object-contain"
-  />
 
-  <p class="text-center mt-2 text-xl font-bold">
+<!-- LOGO -->
+<div class="flex flex-col items-center mb-6">
+  <img src="up.png" class="h-40 w-auto object-contain">
+  <p class="text-xl font-bold mt-2 text-center">
     आन्तरिक लेखा एवं लेखा परीक्षा निदेशालय
   </p>
+  <p class="text-sm text-slate-500">UPIAAD Employee Portal</p>
 </div>
 
-<!-- DISTRICT -->
+<p class="text-sm text-center text-slate-600 mb-4">
+  कृपया क्रम से जिला, कार्यालय एवं नाम चुनें
+</p>
+
+<!-- DISTRICT (SORTED) -->
 <select id="district" class="border p-2 rounded w-full mb-3">
   <option value="">Select District</option>
- <option value="Agra">Agra</option>
-<option value="Aligarh">Aligarh</option>
-<option value="Ambedkar Nagar">Ambedkar Nagar</option>
-<option value="Amethi">Amethi</option>
-<option value="Amroha">Amroha</option>
-<option value="Auraiya">Auraiya</option>
-<option value="Ayodhya">Ayodhya</option>
-<option value="Azamgarh">Azamgarh</option>
-<option value="Baghpat">Baghpat</option>
-<option value="Bahraich">Bahraich</option>
-<option value="Ballia">Ballia</option>
-<option value="Balrampur">Balrampur</option>
-<option value="Banda">Banda</option>
-<option value="Barabanki">Barabanki</option>
-<option value="Bareilly">Bareilly</option>
-<option value="Basti">Basti</option>
-<option value="Bijnor">Bijnor</option>
-<option value="Budaun">Budaun</option>
-<option value="Bulandshahr">Bulandshahr</option>
-<option value="Chandauli">Chandauli</option>
-<option value="Chitrakoot">Chitrakoot</option>
-<option value="Deoria">Deoria</option>
-<option value="Etah">Etah</option>
-<option value="Etawah">Etawah</option>
-<option value="Farrukhabad">Farrukhabad</option>
-<option value="Fatehpur">Fatehpur</option>
-<option value="Firozabad">Firozabad</option>
-<option value="Gautam Buddha Nagar">Gautam Buddha Nagar</option>
-<option value="Ghaziabad">Ghaziabad</option>
-<option value="Ghazipur">Ghazipur</option>
-<option value="Gonda">Gonda</option>
-<option value="Gorakhpur">Gorakhpur</option>
-<option value="Hamirpur">Hamirpur</option>
-<option value="Hapur">Hapur</option>
-<option value="Hardoi">Hardoi</option>
-<option value="Hathras">Hathras</option>
-<option value="Jalaun">Jalaun</option>
-<option value="Jaunpur">Jaunpur</option>
-<option value="Jhansi">Jhansi</option>
-<option value="Kannauj">Kannauj</option>
-<option value="Kanpur Dehat">Kanpur Dehat</option>
-<option value="Kanpur Nagar">Kanpur Nagar</option>
-<option value="Kasganj">Kasganj</option>
-<option value="Kaushambi">Kaushambi</option>
-<option value="Kushinagar">Kushinagar</option>
-<option value="Lakhimpur Kheri">Lakhimpur Kheri</option>
-<option value="Lalitpur">Lalitpur</option>
-<option value="Lucknow">Lucknow</option>
-<option value="Maharajganj">Maharajganj</option>
-<option value="Mahoba">Mahoba</option>
-<option value="Mainpuri">Mainpuri</option>
-<option value="Mathura">Mathura</option>
-<option value="Mau">Mau</option>
-<option value="Meerut">Meerut</option>
-<option value="Mirzapur">Mirzapur</option>
-<option value="Moradabad">Moradabad</option>
-<option value="Muzaffarnagar">Muzaffarnagar</option>
-<option value="Pilibhit">Pilibhit</option>
-<option value="Pratapgarh">Pratapgarh</option>
-<option value="Prayagraj">Prayagraj</option>
-<option value="Rae Bareli">Rae Bareli</option>
-<option value="Rampur">Rampur</option>
-<option value="Saharanpur">Saharanpur</option>
-<option value="Sambhal">Sambhal</option>
-<option value="Sant Kabir Nagar">Sant Kabir Nagar</option>
-<option value="Sant Ravidas Nagar">Sant Ravidas Nagar</option>
-<option value="Shahjahanpur">Shahjahanpur</option>
-<option value="Shamli">Shamli</option>
-<option value="Shravasti">Shravasti</option>
-<option value="Siddharthnagar">Siddharthnagar</option>
-<option value="Sitapur">Sitapur</option>
-<option value="Sonbhadra">Sonbhadra</option>
-<option value="Sultanpur">Sultanpur</option>
-<option value="Unnao">Unnao</option>
-<option value="Varanasi">Varanasi</option>
 </select>
 
 <!-- OFFICE -->
-<select id="office" class="border p-2 rounded w-full mb-3">
-  <option value="">Select Office</option>
+<select id="office" disabled
+  class="border p-2 rounded w-full mb-3 bg-slate-100 cursor-not-allowed">
+  <option>Select Office</option>
 </select>
 
 <!-- EMPLOYEE -->
-<select id="employee" class="border p-2 rounded w-full mb-3">
-  <option value="">Select Employee</option>
+<select id="employee" disabled
+  class="border p-2 rounded w-full mb-3 bg-slate-100 cursor-not-allowed">
+  <option>Select Employee</option>
 </select>
 
-<!-- PASSWORD -->
-<input id="password" type="password"
-  placeholder="Enter Password"
-  class="border p-2 rounded w-full mb-3">
+<!-- PASSWORD WITH TOGGLE -->
+<div class="relative mb-3">
+  <input id="password" type="password" disabled
+    placeholder="Enter Password"
+    class="border p-2 rounded w-full pr-10 bg-slate-100 cursor-not-allowed">
+  <button type="button" id="togglePwd"
+    class="absolute right-3 top-2.5 text-slate-500">👁</button>
+</div>
 
-<button id="loginBtn"
-  class="bg-indigo-600 hover:bg-indigo-700 text-white w-full p-3 rounded-xl font-bold">
-Login
-</button>
+<div class="flex gap-2">
+  <button id="loginBtn" disabled
+    class="bg-indigo-600 opacity-50 text-white w-full p-3 rounded-xl font-bold cursor-not-allowed">
+    Login
+  </button>
+  <button id="resetBtn"
+    class="bg-slate-200 px-4 rounded-xl font-semibold">
+    Reset
+  </button>
+</div>
 
 <p id="msg" class="text-red-600 text-sm mt-3"></p>
 
-<!-- 🔐 ADMIN LOGIN BUTTON -->
 <div class="mt-6 text-center border-t pt-4">
-  <a href="admin-login.html"
-     class="inline-block text-indigo-600 font-bold hover:underline">
-     🔐 Admin Login
+  <a href="admin-login.html" class="text-indigo-600 font-bold">
+    🔐 Admin Login
   </a>
 </div>
 
@@ -140,7 +76,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, getDocs, query, where }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
   authDomain: "antrik-lekha.firebaseapp.com",
@@ -151,111 +86,112 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ELEMENTS */
 const district = document.getElementById("district");
 const office = document.getElementById("office");
 const employee = document.getElementById("employee");
-const passwordInput = document.getElementById("password");
+const password = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const resetBtn = document.getElementById("resetBtn");
+const togglePwd = document.getElementById("togglePwd");
 const msg = document.getElementById("msg");
 
 let selectedEmployee = null;
 
-/* DISTRICT → OFFICE */
+function enable(el){
+  el.disabled=false;
+  el.classList.remove("bg-slate-100","cursor-not-allowed","opacity-50");
+}
+function disable(el){
+  el.disabled=true;
+  el.classList.add("bg-slate-100","cursor-not-allowed","opacity-50");
+}
+
+/* SHOW / HIDE PASSWORD */
+togglePwd.onclick = () => {
+  password.type = password.type === "password" ? "text" : "password";
+};
+
+/* RESET */
+resetBtn.onclick = () => {
+  district.value="";
+  office.innerHTML="<option>Select Office</option>";
+  employee.innerHTML="<option>Select Employee</option>";
+  password.value="";
+  msg.textContent="";
+  disable(office); disable(employee); disable(password); disable(loginBtn);
+};
+
+/* LOAD DISTRICTS (SORTED FROM FIRESTORE) */
+(async()=>{
+  const snap = await getDocs(collection(db,"employees"));
+  const districts = [...new Set(
+    snap.docs.map(d=>d.data().district)
+  )].sort((a,b)=>a.localeCompare(b));
+
+  districts.forEach(d=>{
+    district.innerHTML+=`<option>${d}</option>`;
+  });
+})();
+
+/* DISTRICT → OFFICE (SORTED) */
 district.onchange = async () => {
-  office.innerHTML = `<option value="">Select Office</option>`;
-  employee.innerHTML = `<option value="">Select Employee</option>`;
-  msg.textContent = "";
+  msg.textContent="";
+  enable(office); disable(employee); disable(password); disable(loginBtn);
+  office.innerHTML="<option>Loading...</option>";
 
-  if (!district.value) return;
-
-  const q = query(
-    collection(db, "employees"),
-    where("district", "==", district.value)
-  );
-
+  const q = query(collection(db,"employees"),
+    where("district","==",district.value));
   const snap = await getDocs(q);
-  const offices = [...new Set(
-    snap.docs.map(d => d.data().office).filter(Boolean)
-  )];
 
-  offices.forEach(o => {
-    const opt = document.createElement("option");
-    opt.value = o;
-    opt.textContent = o;
-    office.appendChild(opt);
-  });
+  const offices=[...new Set(
+    snap.docs.map(d=>d.data().office)
+  )].sort((a,b)=>a.localeCompare(b));
+
+  office.innerHTML="<option value=''>Select Office</option>";
+  offices.forEach(o=>office.innerHTML+=`<option>${o}</option>`);
 };
 
-/* OFFICE → EMPLOYEE */
+/* OFFICE → EMPLOYEE (SORTED) */
 office.onchange = async () => {
-  employee.innerHTML = `<option value="">Select Employee</option>`;
-  msg.textContent = "";
+  enable(employee); disable(password); disable(loginBtn);
+  employee.innerHTML="<option>Loading...</option>";
 
-  if (!office.value) return;
+  const q=query(collection(db,"employees"),
+    where("district","==",district.value),
+    where("office","==",office.value));
+  const snap=await getDocs(q);
 
-  const q = query(
-    collection(db, "employees"),
-    where("district", "==", district.value),
-    where("office", "==", office.value)
-  );
+  const emps=snap.docs
+    .map(d=>({id:d.id,name:d.data().name,phone:d.data().phone}))
+    .sort((a,b)=>a.name.localeCompare(b.name));
 
-  const snap = await getDocs(q);
-  snap.forEach(d => {
-    const opt = document.createElement("option");
-    opt.value = d.id;
-    opt.textContent = d.data().name;
-    employee.appendChild(opt);
+  employee.innerHTML="<option value=''>Select Employee</option>";
+  emps.forEach(e=>{
+    employee.innerHTML+=`<option value="${e.id}">${e.name}</option>`;
   });
 };
+
+employee.onchange=()=>enable(password);
+password.oninput=()=>enable(loginBtn);
 
 /* LOGIN */
-loginBtn.onclick = async () => {
-  msg.textContent = "";
-
-  if (!employee.value || !passwordInput.value) {
-    msg.textContent = "Please select employee and enter password";
-    return;
-  }
-
-  const snap = await getDocs(collection(db, "employees"));
-  snap.forEach(d => {
-    if (d.id === employee.value) selectedEmployee = d.data();
+loginBtn.onclick=async()=>{
+  const snap=await getDocs(collection(db,"employees"));
+  snap.forEach(d=>{
+    if(d.id===employee.value) selectedEmployee=d.data();
   });
 
-  if (!selectedEmployee) {
-    msg.textContent = "Employee not found";
-    return;
-  }
+  const first=selectedEmployee.name.split(" ")[0];
+  const last5=selectedEmployee.phone.slice(-5);
 
-  const firstName = selectedEmployee.name.split(" ")[0];
-  const last5 = selectedEmployee.phone.slice(-5);
-  const expectedPassword = firstName + last5;
-
-  if (
-    passwordInput.value.trim().toLowerCase() ===
-    expectedPassword.toLowerCase()
-  ) {
-    sessionStorage.setItem("empAuth", "true");
-    sessionStorage.setItem("empName", selectedEmployee.name);
-    location.href = "public-dashboard.html";
+  if(password.value.toLowerCase()===(first+last5).toLowerCase()){
+    sessionStorage.setItem("empAuth","true");
+    sessionStorage.setItem("empName",selectedEmployee.name);
+    location.href="public-dashboard.html";
   } else {
-    msg.textContent = "Invalid password";
+    msg.textContent="Invalid password";
   }
 };
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
