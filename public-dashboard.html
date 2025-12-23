@@ -149,9 +149,10 @@ districtSelect.onchange = async () => {
   );
 
   const snap = await getDocs(q);
-  const offices = [...new Set(
-    snap.docs.map(d => d.data().office).filter(Boolean)
-  )];
+const offices = [...new Set(
+  snap.docs.map(d => d.data().office).filter(Boolean)
+)].sort((a, b) => a.localeCompare(b));
+
 
   offices.forEach(o => {
     const opt = document.createElement("option");
@@ -230,6 +231,7 @@ window.logout = () => {
 
 </body>
 </html>
+
 
 
 
