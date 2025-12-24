@@ -25,6 +25,7 @@ if (sessionStorage.getItem("empAuth") !== "true") {
       <h1 class="text-2xl font-bold">आन्तरिक लेखा एवं लेखा परीक्षा निदेशालय</h1>
       <p class="text-sm opacity-90">Employee Dashboard</p>
     </div>
+
     <div class="flex items-center gap-4">
       <span class="text-sm">👤 <b id="userName"></b></span>
       <button onclick="logout()"
@@ -37,19 +38,20 @@ if (sessionStorage.getItem("empAuth") !== "true") {
 
 <main class="max-w-5xl mx-auto p-6 space-y-10">
 
-<!-- ================= METHOD 1 : SEARCH BY NAME (GLOBAL) ================= -->
+<!-- ================= METHOD 1 : GLOBAL NAME SEARCH ================= -->
 <section class="bg-white p-6 rounded-2xl shadow">
   <h2 class="text-lg font-bold mb-4 text-indigo-700">
     🔍 Search Employee by Name
   </h2>
 
-  <div class="grid md:grid-cols-2 gap-4">
+  <div class="flex gap-3">
     <input id="nameInput"
       type="text"
       placeholder="Type employee name"
-      class="border p-3 rounded-xl"/>
+      class="border p-3 rounded-xl w-full"/>
+
     <button id="nameSearchBtn"
-      class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold">
+      class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-xl font-bold">
       Search
     </button>
   </div>
@@ -174,9 +176,16 @@ if (sessionStorage.getItem("empAuth") !== "true") {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, query, where, doc, getDoc
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
   authDomain: "antrik-lekha.firebaseapp.com",
@@ -187,10 +196,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* USER NAME */
 document.getElementById("userName").innerText =
   sessionStorage.getItem("empName") || "";
 
-/* ================= METHOD 1 : GLOBAL NAME SEARCH ================= */
+/* ================= METHOD 1 : GLOBAL NAME SEARCH (MULTIPLE RESULTS) ================= */
 nameSearchBtn.onclick = async () => {
   const name = nameInput.value.trim().toLowerCase();
   nameResult.innerHTML = "";
@@ -203,22 +213,24 @@ nameSearchBtn.onclick = async () => {
 
   const snap = await getDocs(collection(db, "employees"));
 
-  const emp = snap.docs
+  const results = snap.docs
     .map(d => d.data())
-    .find(e => e.name.toLowerCase().includes(name));
+    .filter(e => e.name.toLowerCase().includes(name));
 
-  if (!emp) {
+  if (results.length === 0) {
     nameResult.innerHTML =
       "<p class='text-red-600 font-semibold'>No record found</p>";
   } else {
-    nameResult.innerHTML = `
-      <div class="bg-slate-50 p-4 rounded-xl space-y-1">
-        <div class="font-bold text-lg">${emp.name}</div>
-        <div>📞 ${emp.phone}</div>
-        <div>📍 ${emp.district}</div>
-        <div>🏢 ${emp.office}</div>
-        <div>👔 ${emp.post}</div>
-      </div>`;
+    results.forEach(emp => {
+      nameResult.innerHTML += `
+        <div class="bg-slate-50 p-4 rounded-xl mb-3 space-y-1">
+          <div class="font-bold text-lg">${emp.name}</div>
+          <div>📞 ${emp.phone}</div>
+          <div>📍 ${emp.district}</div>
+          <div>🏢 ${emp.office}</div>
+          <div>👔 ${emp.post}</div>
+        </div>`;
+    });
   }
 
   nameResult.classList.remove("hidden");
@@ -272,6 +284,7 @@ searchBtn.onclick = async () => {
   dropResult.classList.remove("hidden");
 };
 
+/* LOGOUT */
 window.logout = () => {
   sessionStorage.clear();
   location.href = "index.html";
