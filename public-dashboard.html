@@ -25,11 +25,8 @@ if (sessionStorage.getItem("empAuth") !== "true") {
       <h1 class="text-2xl font-bold">आन्तरिक लेखा एवं लेखा परीक्षा निदेशालय</h1>
       <p class="text-sm opacity-90">Employee Dashboard</p>
     </div>
-
     <div class="flex items-center gap-4">
-      <span class="text-sm">
-        👤 <b id="userName"></b>
-      </span>
+      <span class="text-sm">👤 <b id="userName"></b></span>
       <button onclick="logout()"
         class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl font-bold">
         Logout
@@ -38,87 +35,87 @@ if (sessionStorage.getItem("empAuth") !== "true") {
   </div>
 </header>
 
-<!-- MAIN -->
-<main class="max-w-5xl mx-auto p-6">
+<main class="max-w-5xl mx-auto p-6 space-y-10">
 
-<!-- FILTERS -->
-<div class="bg-white p-6 rounded-2xl shadow mb-8 grid md:grid-cols-6 gap-4">
+<!-- ================= METHOD 1 : SEARCH BY NAME ================= -->
+<section class="bg-white p-6 rounded-2xl shadow">
+  <h2 class="text-lg font-bold mb-4 text-indigo-700">
+    🔍 Search by Employee Name
+  </h2>
 
-  <!-- DISTRICT -->
-  <select id="district" class="border p-2 rounded w-full">
-    <option value="">Select District</option>
-    <!-- district list unchanged -->
-    <option value="Agra">Agra</option>
-    <option value="Aligarh">Aligarh</option>
-    <option value="Lucknow">Lucknow</option>
-    <option value="Prayagraj">Prayagraj</option>
-    <option value="Varanasi">Varanasi</option>
-    <!-- बाकी वही -->
-  </select>
+  <div class="grid md:grid-cols-2 gap-4">
+    <select id="districtNameSearch" class="border p-3 rounded-xl">
+      <option value="">Select District</option>
+      <option>Lucknow</option>
+      <option>Prayagraj</option>
+      <option>Varanasi</option>
+      <option>Agra</option>
+    </select>
 
-  <!-- OFFICE -->
-  <select id="officeSelect" class="border p-3 rounded-xl">
-    <option value="">Select Office</option>
-  </select>
-
-  <!-- POST -->
-  <select id="postSelect" class="border p-3 rounded-xl">
-    <option value="">Select Post</option>
-    <option value="Assistant Accountant">Assistant Accountant</option>
-    <option value="Accountant">Accountant</option>
-    <option value="Assistant Account Officer">Assistant Account Officer</option>
-  </select>
-
-  <!-- EMPLOYEE DROPDOWN -->
-  <select id="employeeSelect" class="border p-3 rounded-xl">
-    <option value="">Select Employee</option>
-  </select>
-
-  <!-- 🆕 SEARCH BY NAME -->
-  <input id="nameSearch"
-    type="text"
-    placeholder="Type employee name"
-    class="border p-3 rounded-xl"/>
-
-  <!-- SEARCH BUTTON -->
-  <button id="searchBtn"
-    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl">
-    Search
-  </button>
-</div>
-
-<!-- RESULT -->
-<div id="resultArea" class="hidden">
-  <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 id="empName" class="text-xl font-bold text-indigo-700"></h3>
-    <p class="mt-2"><b>📞 Mobile:</b> <span id="empPhone"></span></p>
-    <p><b>📍 District:</b> <span id="empDistrict"></span></p>
-    <p><b>🏢 Office:</b> <span id="empOffice"></span></p>
-    <p><b>👔 Post:</b> <span id="empPost"></span></p>
+    <input id="nameInput"
+      type="text"
+      placeholder="Type employee name"
+      class="border p-3 rounded-xl"/>
   </div>
-</div>
 
-<div id="noResult" class="hidden text-center text-slate-500 mt-12">
-  <i class="fa-solid fa-user-slash text-4xl mb-3"></i>
-  <p class="font-semibold">No record found</p>
-</div>
+  <div class="mt-4">
+    <button id="nameSearchBtn"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl font-bold">
+      Search
+    </button>
+  </div>
+
+  <div id="nameResult" class="hidden mt-6"></div>
+</section>
+
+<!-- ================= METHOD 2 : DROPDOWN SEARCH ================= -->
+<section class="bg-white p-6 rounded-2xl shadow">
+  <h2 class="text-lg font-bold mb-4 text-indigo-700">
+    📋 Search by District / Office / Post
+  </h2>
+
+  <div class="grid md:grid-cols-5 gap-4">
+    <select id="districtDrop" class="border p-3 rounded-xl">
+      <option value="">Select District</option>
+      <option>Lucknow</option>
+      <option>Prayagraj</option>
+      <option>Varanasi</option>
+      <option>Agra</option>
+    </select>
+
+    <select id="officeSelect" class="border p-3 rounded-xl">
+      <option value="">Select Office</option>
+    </select>
+
+    <select id="postSelect" class="border p-3 rounded-xl">
+      <option value="">Select Post</option>
+      <option>Assistant Accountant</option>
+      <option>Accountant</option>
+      <option>Assistant Account Officer</option>
+    </select>
+
+    <select id="employeeSelect" class="border p-3 rounded-xl">
+      <option value="">Select Employee</option>
+    </select>
+
+    <button id="searchBtn"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl">
+      Search
+    </button>
+  </div>
+
+  <div id="dropResult" class="hidden mt-6"></div>
+</section>
 
 </main>
 
-<!-- FIREBASE LOGIC -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc
+  getFirestore, collection, getDocs, query, where, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBDE0Oy6bSo05jl48kugFnrtHAPZt-eanA",
   authDomain: "antrik-lekha.firebaseapp.com",
@@ -129,115 +126,85 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ELEMENTS */
-const districtSelect = document.getElementById("district");
-const officeSelect = document.getElementById("officeSelect");
-const postSelect = document.getElementById("postSelect");
-const employeeSelect = document.getElementById("employeeSelect");
-const nameSearch = document.getElementById("nameSearch");
-const searchBtn = document.getElementById("searchBtn");
-
-const resultArea = document.getElementById("resultArea");
-const noResult = document.getElementById("noResult");
-
-const empName = document.getElementById("empName");
-const empPhone = document.getElementById("empPhone");
-const empDistrict = document.getElementById("empDistrict");
-const empOffice = document.getElementById("empOffice");
-const empPost = document.getElementById("empPost");
-
-let cachedEmployees = [];
-
-/* USER NAME */
 document.getElementById("userName").innerText =
   sessionStorage.getItem("empName") || "";
 
-/* DISTRICT → OFFICE */
-districtSelect.onchange = async () => {
-  officeSelect.innerHTML = `<option value="">Select Office</option>`;
-  employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
-  nameSearch.value = "";
-  resultArea.classList.add("hidden");
+/* ================= METHOD 1 LOGIC ================= */
+nameSearchBtn.onclick = async () => {
+  const dist = districtNameSearch.value;
+  const name = nameInput.value.toLowerCase();
+  nameResult.innerHTML = "";
+  nameResult.classList.add("hidden");
 
-  if (!districtSelect.value) return;
-
-  const q = query(collection(db, "employees"),
-    where("district", "==", districtSelect.value));
-  const snap = await getDocs(q);
-
-  const offices = [...new Set(
-    snap.docs.map(d => d.data().office).filter(Boolean)
-  )].sort((a,b)=>a.localeCompare(b));
-
-  offices.forEach(o=>{
-    officeSelect.innerHTML += `<option>${o}</option>`;
-  });
-};
-
-/* OFFICE / POST → LOAD EMPLOYEES */
-async function loadEmployees(){
-  employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
-  cachedEmployees = [];
-  nameSearch.value = "";
-
-  if(!districtSelect.value || !officeSelect.value) return;
+  if(!dist || !name) return alert("Select district and enter name");
 
   const q = query(collection(db,"employees"),
-    where("district","==",districtSelect.value),
-    where("office","==",officeSelect.value));
+    where("district","==",dist));
   const snap = await getDocs(q);
 
-  snap.forEach(d=>{
-    const e = { id:d.id, ...d.data() };
-    if(postSelect.value && e.post !== postSelect.value) return;
-    cachedEmployees.push(e);
-    employeeSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
-  });
-}
+  const emp = snap.docs
+    .map(d=>d.data())
+    .find(e=>e.name.toLowerCase().includes(name));
 
-officeSelect.onchange = loadEmployees;
-postSelect.onchange = loadEmployees;
+  if(!emp){
+    nameResult.innerHTML="<p class='text-red-600'>No record found</p>";
+  } else {
+    nameResult.innerHTML = `
+      <div class="bg-slate-50 p-4 rounded-xl">
+        <b>${emp.name}</b><br>
+        📞 ${emp.phone}<br>
+        🏢 ${emp.office}<br>
+        👔 ${emp.post}
+      </div>`;
+  }
+  nameResult.classList.remove("hidden");
+};
 
-/* 🆕 SEARCH BY NAME (TYPING) */
-nameSearch.oninput = () => {
-  const txt = nameSearch.value.toLowerCase();
-  employeeSelect.innerHTML = `<option value="">Select Employee</option>`;
+/* ================= METHOD 2 LOGIC ================= */
+districtDrop.onchange = async () => {
+  officeSelect.innerHTML="<option>Select Office</option>";
+  const q=query(collection(db,"employees"),
+    where("district","==",districtDrop.value));
+  const snap=await getDocs(q);
 
-  cachedEmployees
-    .filter(e => e.name.toLowerCase().includes(txt))
-    .forEach(e=>{
-      employeeSelect.innerHTML +=
-        `<option value="${e.id}">${e.name}</option>`;
+  [...new Set(snap.docs.map(d=>d.data().office))]
+    .sort((a,b)=>a.localeCompare(b))
+    .forEach(o=>{
+      officeSelect.innerHTML+=`<option>${o}</option>`;
     });
 };
 
-/* SEARCH BUTTON */
-searchBtn.onclick = async () => {
-  resultArea.classList.add("hidden");
-  noResult.classList.add("hidden");
+officeSelect.onchange = async () => {
+  employeeSelect.innerHTML="<option>Select Employee</option>";
+  const q=query(collection(db,"employees"),
+    where("district","==",districtDrop.value),
+    where("office","==",officeSelect.value));
+  const snap=await getDocs(q);
 
-  if (!employeeSelect.value) {
-    alert("Please select employee");
-    return;
-  }
-
-  const snap = await getDoc(doc(db,"employees",employeeSelect.value));
-  if (!snap.exists()) {
-    noResult.classList.remove("hidden");
-    return;
-  }
-
-  const e = snap.data();
-  empName.innerText = e.name;
-  empPhone.innerText = e.phone;
-  empDistrict.innerText = e.district;
-  empOffice.innerText = e.office;
-  empPost.innerText = e.post;
-
-  resultArea.classList.remove("hidden");
+  snap.forEach(d=>{
+    const e=d.data();
+    if(postSelect.value && e.post!==postSelect.value) return;
+    employeeSelect.innerHTML+=
+      `<option value="${d.id}">${e.name}</option>`;
+  });
 };
 
-/* LOGOUT */
+searchBtn.onclick = async () => {
+  const snap=await getDoc(
+    doc(db,"employees",employeeSelect.value));
+  if(!snap.exists()) return;
+
+  const e=snap.data();
+  dropResult.innerHTML = `
+    <div class="bg-slate-50 p-4 rounded-xl">
+      <b>${e.name}</b><br>
+      📞 ${e.phone}<br>
+      🏢 ${e.office}<br>
+      👔 ${e.post}
+    </div>`;
+  dropResult.classList.remove("hidden");
+};
+
 window.logout = () => {
   sessionStorage.clear();
   location.href = "index.html";
