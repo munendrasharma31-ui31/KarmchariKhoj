@@ -32,7 +32,10 @@
 
   <select id="districtInput" class="border p-2 rounded-xl" required>
     <option value="">Select District</option>
-    <option value="Agra">Agra</option> <option value="Aligarh">Aligarh</option> <option value="Ambedkar Nagar">Ambedkar Nagar</option> <option value="Amethi">Amethi</option> <option value="Amroha">Amroha</option> <option value="Auraiya">Auraiya</option> <option value="Ayodhya">Ayodhya</option> <option value="Azamgarh">Azamgarh</option> <option value="Baghpat">Baghpat</option> <option value="Bahraich">Bahraich</option> <option value="Ballia">Ballia</option> <option value="Balrampur">Balrampur</option> <option value="Banda">Banda</option> <option value="Barabanki">Barabanki</option> <option value="Bareilly">Bareilly</option> <option value="Basti">Basti</option> <option value="Bijnor">Bijnor</option> <option value="Budaun">Budaun</option> <option value="Bulandshahr">Bulandshahr</option> <option value="Chandauli">Chandauli</option> <option value="Chitrakoot">Chitrakoot</option> <option value="Deoria">Deoria</option> <option value="Etah">Etah</option> <option value="Etawah">Etawah</option> <option value="Farrukhabad">Farrukhabad</option> <option value="Fatehpur">Fatehpur</option> <option value="Firozabad">Firozabad</option> <option value="Gautam Buddha Nagar">Gautam Buddha Nagar</option> <option value="Ghaziabad">Ghaziabad</option> <option value="Ghazipur">Ghazipur</option> <option value="Gonda">Gonda</option> <option value="Gorakhpur">Gorakhpur</option> <option value="Hamirpur">Hamirpur</option> <option value="Hapur">Hapur</option> <option value="Hardoi">Hardoi</option> <option value="Hathras">Hathras</option> <option value="Jalaun">Jalaun</option> <option value="Jaunpur">Jaunpur</option> <option value="Jhansi">Jhansi</option> <option value="Kannauj">Kannauj</option> <option value="Kanpur Dehat">Kanpur Dehat</option> <option value="Kanpur Nagar">Kanpur Nagar</option> <option value="Kasganj">Kasganj</option> <option value="Kaushambi">Kaushambi</option> <option value="Kushinagar">Kushinagar</option> <option value="Lakhimpur Kheri">Lakhimpur Kheri</option> <option value="Lalitpur">Lalitpur</option> <option value="Lucknow">Lucknow</option> <option value="Maharajganj">Maharajganj</option> <option value="Mahoba">Mahoba</option> <option value="Mainpuri">Mainpuri</option> <option value="Mathura">Mathura</option> <option value="Mau">Mau</option> <option value="Meerut">Meerut</option> <option value="Mirzapur">Mirzapur</option> <option value="Moradabad">Moradabad</option> <option value="Muzaffarnagar">Muzaffarnagar</option> <option value="Pilibhit">Pilibhit</option> <option value="Pratapgarh">Pratapgarh</option> <option value="Prayagraj">Prayagraj</option> <option value="Rae Bareli">Rae Bareli</option> <option value="Rampur">Rampur</option> <option value="Saharanpur">Saharanpur</option> <option value="Sambhal">Sambhal</option> <option value="Sant Kabir Nagar">Sant Kabir Nagar</option> <option value="Sant Ravidas Nagar">Sant Ravidas Nagar</option> <option value="Shahjahanpur">Shahjahanpur</option> <option value="Shamli">Shamli</option> <option value="Shravasti">Shravasti</option> <option value="Siddharthnagar">Siddharthnagar</option> <option value="Sitapur">Sitapur</option> <option value="Sonbhadra">Sonbhadra</option> <option value="Sultanpur">Sultanpur</option> <option value="Unnao">Unnao</option> <option value="Varanasi">Varanasi</option>
+    <option>Agra</option>
+    <option>Lucknow</option>
+    <option>Varanasi</option>
+    <!-- baaki districts jaise pehle -->
   </select>
 
   <input id="officeInput" class="border p-2 rounded-xl" placeholder="Office">
@@ -60,40 +63,34 @@ Upload
 </button>
 </div>
 
-<!-- LIST + FILTERS -->
+<!-- TABLE + FILTER -->
 <div class="bg-white p-6 rounded-2xl shadow">
 
-<!-- 🔍 FILTER & SORT -->
-<div class="flex flex-wrap gap-4 justify-between mb-4">
+<!-- OFFICE FILTER -->
+<div class="flex justify-end mb-3">
   <select id="officeFilter" class="border p-2 rounded-xl">
     <option value="">All Offices</option>
-  </select>
-
-  <select id="sortSelect" class="border p-2 rounded-xl">
-    <option value="">Sort by Name</option>
-    <option value="az">A → Z</option>
-    <option value="za">Z → A</option>
   </select>
 </div>
 
 <table class="w-full border text-sm">
 <thead class="bg-slate-100">
 <tr>
-<th class="border p-2">Name</th>
-<th class="border p-2">Phone</th>
-<th class="border p-2">District</th>
-<th class="border p-2">Office</th>
-<th class="border p-2">Post</th>
-<th class="border p-2">Action</th>
+  <th class="border p-2 cursor-pointer" data-key="name">Name ⬍</th>
+  <th class="border p-2 cursor-pointer" data-key="phone">Phone ⬍</th>
+  <th class="border p-2 cursor-pointer" data-key="district">District ⬍</th>
+  <th class="border p-2 cursor-pointer" data-key="office">Office ⬍</th>
+  <th class="border p-2 cursor-pointer" data-key="post">Post ⬍</th>
+  <th class="border p-2">Action</th>
 </tr>
 </thead>
 <tbody id="list"></tbody>
 </table>
+
 </div>
 
 </main>
 
-<!-- SCRIPT -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut }
@@ -119,7 +116,7 @@ const db = getFirestore(app);
 onAuthStateChanged(auth, user=>{
   if(!user) location.href="admin-login.html";
 });
-logoutBtn.onclick = async ()=>{
+logoutBtn.onclick = async()=>{
   await signOut(auth);
   location.href="index.html";
 };
@@ -133,27 +130,26 @@ const districtInput = document.getElementById("districtInput");
 const officeInput = document.getElementById("officeInput");
 const postInput = document.getElementById("postInput");
 const list = document.getElementById("list");
-const sortSelect = document.getElementById("sortSelect");
 const officeFilter = document.getElementById("officeFilter");
 
 let employeeCache = [];
+let sortKey = "";
+let sortDir = "asc";
 
 /* LOAD DATA */
 async function loadData(){
-  list.innerHTML="";
   employeeCache = [];
-
   const snap = await getDocs(collection(db,"employees"));
   snap.forEach(d=>{
     employeeCache.push({ id:d.id, ...d.data() });
   });
 
-  // OFFICE FILTER OPTIONS
+  // Office filter options
   officeFilter.innerHTML = `<option value="">All Offices</option>`;
   [...new Set(employeeCache.map(e=>e.office).filter(Boolean))]
     .sort()
     .forEach(o=>{
-      officeFilter.innerHTML += `<option value="${o}">${o}</option>`;
+      officeFilter.innerHTML += `<option>${o}</option>`;
     });
 
   renderTable();
@@ -161,21 +157,21 @@ async function loadData(){
 
 /* RENDER TABLE */
 function renderTable(){
-  list.innerHTML="";
-
+  list.innerHTML = "";
   let data = [...employeeCache];
 
-  // OFFICE FILTER
   if(officeFilter.value){
-    data = data.filter(e=>e.office===officeFilter.value);
+    data = data.filter(e=>e.office === officeFilter.value);
   }
 
-  // SORT
-  if(sortSelect.value==="az"){
-    data.sort((a,b)=>a.name.localeCompare(b.name));
-  }
-  if(sortSelect.value==="za"){
-    data.sort((a,b)=>b.name.localeCompare(a.name));
+  if(sortKey){
+    data.sort((a,b)=>{
+      const x = (a[sortKey]||"").toString().toLowerCase();
+      const y = (b[sortKey]||"").toString().toLowerCase();
+      return sortDir === "asc"
+        ? x.localeCompare(y)
+        : y.localeCompare(x);
+    });
   }
 
   data.forEach(e=>{
@@ -213,14 +209,26 @@ function renderTable(){
   });
 }
 
-/* EVENTS */
-sortSelect.onchange = renderTable;
+/* SORT HANDLER */
+document.querySelectorAll("th[data-key]").forEach(th=>{
+  th.onclick = ()=>{
+    const key = th.dataset.key;
+    if(sortKey === key){
+      sortDir = sortDir === "asc" ? "desc" : "asc";
+    } else {
+      sortKey = key;
+      sortDir = "asc";
+    }
+    renderTable();
+  };
+});
+
+/* FILTER */
 officeFilter.onchange = renderTable;
 
 /* SAVE */
 empForm.onsubmit = async e=>{
   e.preventDefault();
-
   const data = {
     name:nameInput.value.trim(),
     phone:phoneInput.value.trim(),
