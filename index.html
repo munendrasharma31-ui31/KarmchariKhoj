@@ -104,7 +104,10 @@ officeDrop.onchange = () => {
 
   [...new Set(
     allEmployees
-      .filter(e => e.office === officeDrop.value)
+      .filter(e =>
+  (e.office || "").toLowerCase() === officeDrop.value.toLowerCase()
+)
+
       .map(e => e.district)
   )]
   .sort()
@@ -124,10 +127,14 @@ searchBtn.onclick = () => {
     return;
   }
 
-  const filtered = allEmployees.filter(e =>
-    e.office === officeDrop.value &&
-    e.district === districtDrop.value
-  );
+ const selectedOffice = officeDrop.value.toLowerCase();
+const selectedDistrict = districtDrop.value.toLowerCase();
+
+const filtered = allEmployees.filter(e =>
+  (e.office || "").toLowerCase() === selectedOffice &&
+  (e.district || "").toLowerCase() === selectedDistrict
+);
+
 
   if (filtered.length === 0) {
     result.innerHTML =
@@ -150,3 +157,4 @@ searchBtn.onclick = () => {
 
 </body>
 </html>
+
