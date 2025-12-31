@@ -171,20 +171,33 @@ searchBtn.onclick = ()=>{
   const grid = result.firstElementChild;
 
   filtered.forEach(e=>{
-    grid.innerHTML += `
-      <div class="bg-white rounded-2xl p-6 elevated">
-        <div class="font-bold text-lg text-indigo-800">${e.name}</div>
-        <div class="text-sm mt-2">📞 ${e.phone}</div>
-        <div class="text-sm">🏢 ${e.office}</div>
-        <div class="text-sm">📍 ${e.district}</div>
-        <span class="inline-block mt-4 text-xs
-          bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">
-          ${e.post}
-        </span>
-      </div>`;
+   grid.innerHTML += `
+  <div class="bg-white rounded-2xl p-6 elevated">
+    <div class="font-bold text-lg text-indigo-800">
+      ${e.name}
+    </div>
+
+    <div class="text-sm mt-2">📞 ${e.phone}</div>
+
+    <div class="text-sm mt-1">
+      🏢 ${e.office}
+    </div>
+
+    <div class="text-sm">
+      📍 ${e.district}
+      ${e.block ? ` / ${e.block}` : ""}
+    </div>
+
+    <span class="inline-block mt-4 text-xs
+      bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">
+      ${e.post}
+    </span>
+  </div>`;
+
   });
 };
 </script>
 
 </body>
 </html>
+
